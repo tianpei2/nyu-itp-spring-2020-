@@ -20,6 +20,7 @@ import { UserContext } from './User';
 import CategoryIcon from './CategoryIcon';
 import foursquare from './APIClient';
 import RelativeTime from './RelativeTime';
+import HeadsetIcon from '@material-ui/icons/Headset';
 
 const styles = theme => ({
   cardHeaderContent: {
@@ -108,10 +109,8 @@ class AudioList extends React.Component {
 
           <CardActions>
             <Box component="span" flexGrow={1} ml={1} color="textSecondary" fontSize="caption.fontSize">
-              Last played: <RelativeTime time={audio.createDate} />
-              <p>
-              Total played: {audio.playCount || 0} times
-              </p>
+              <RelativeTime time={audio.createDate} />
+            <HeadsetIcon fontSize="small" color="primary"/> Total played {audio.playCount || 0} times
             </Box>
 
             <IconButton
@@ -132,7 +131,7 @@ class AudioList extends React.Component {
 
     return (
       <main>
-        <Box p={8} mb={4} bgcolor="background.paper">
+        <Box p={6} mb={4} bgcolor="background.paper">
           <Container component="main" maxWidth="sm">
             <Typography component="h1" variant="h3" align="center" color="textPrimary" gutterBottom>
               {`${user.name.split(" ")[0]}'s Marsbot Audios`}

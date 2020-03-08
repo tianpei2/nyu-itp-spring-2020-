@@ -19,6 +19,8 @@ import qs from 'qs';
 import { UserContext } from './User';
 import CategoryIcon from './CategoryIcon';
 import foursquare from './APIClient';
+import RelativeTime from './RelativeTime';
+import HeadsetIcon from '@material-ui/icons/AccessTime';
 
 const styles = theme => ({
   cardHeaderContent: {
@@ -106,8 +108,9 @@ class AudioList extends React.Component {
           </CardContent>
 
           <CardActions>
-            <Box component="span" flexGrow={1} ml={1} color="textSecondary" fontSize="caption.fontSize">
-              Played {audio.playCountLastDay || 0} times yesterday, {audio.playCount || 0} times since {audio.createDate}
+              <Box component="span" flexGrow={1} ml={1} color="textSecondary" fontSize="caption.fontSize">
+                <RelativeTime time={audio.createDate} />
+              <HeadsetIcon fontSize="small" color="primary"/> Total played {audio.playCount || 0} times
             </Box>
 
             <IconButton

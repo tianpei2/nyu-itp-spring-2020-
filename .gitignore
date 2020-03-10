@@ -11,6 +11,7 @@
 
 # misc
 .DS_Store
+<<<<<<< Updated upstream
 .env.local
 .env.development.local
 .env.test.local
@@ -21,3 +22,7 @@ yarn-debug.log*
 yarn-error.log*
 
 __pycache__/
+=======
+node_modules
+__pycache__/
+>>>>>>> Stashed changes

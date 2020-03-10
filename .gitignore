@@ -12,6 +12,7 @@
 # misc
 .DS_Store
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 .env.local
 .env.development.local
 .env.test.local
@@ -25,4 +26,9 @@ __pycache__/
 =======
 node_modules
 __pycache__/
+>>>>>>> Stashed changes
+=======
+
+__pycache__/
+/node_modules
 >>>>>>> Stashed changes

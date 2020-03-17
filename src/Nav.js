@@ -8,7 +8,8 @@ import {
   MenuItem,
   Toolbar,
   Tooltip,
-  Typography
+  Typography,
+  Button
 } from "@material-ui/core";
 import { PlaylistAdd } from "@material-ui/icons";
 import { Link as RouterLink, useHistory } from "react-router-dom";
@@ -19,6 +20,7 @@ import {
   bindTrigger
 } from "material-ui-popup-state/hooks";
 import React from "react";
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import User from "./User";
 
@@ -51,6 +53,13 @@ export default function Nav(props) {
               >
                 Marsbot Audio
               </Link>
+              &nbsp;&nbsp;
+              <Button
+                target="http://marsbot-audio.herokuapp.com" href="index"
+                color="inherit"
+                startIcon={<RefreshIcon/>}
+                >
+              </Button>
             </Typography>
           </Box>
 

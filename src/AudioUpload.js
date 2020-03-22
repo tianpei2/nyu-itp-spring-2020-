@@ -95,7 +95,7 @@ export default function AudioUpload() {
             </Grid>
             <Grid item xs={6}>
               <AudioRecord
-
+                setFiles={setFiles}
               />
             </Grid>
           </Grid>

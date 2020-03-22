@@ -22,7 +22,7 @@ class AudioRecord extends React.Component {
     }
     // init recording
     this.mediaRecorder = new MediaRecorder(stream);
-    // init data storage for video chunks
+    // init data storage for audio chunks
     this.chunks = [];
     // listen for data from media recorder
     this.mediaRecorder.ondataavailable = e => {
@@ -60,6 +60,7 @@ class AudioRecord extends React.Component {
     // append videoURL to list of saved videos for rendering
     const audios = this.state.audios.concat([audioURL]);
     this.setState({audios});
+    this.props.setFiles(audios);
   }
 
   deleteAudio(audioURL) {
@@ -68,8 +69,9 @@ class AudioRecord extends React.Component {
     this.setState({audios});
   }
 
+
   render() {
-    const {recording, audios, onChange} = this.state;
+    const {recording, audios} = this.state;
     return (
       <div className="camera">
         <audio
@@ -87,7 +89,7 @@ class AudioRecord extends React.Component {
           <h3>Recorded audios:</h3>
           {audios.map((audioURL, i) => (
             <div key={`audio_${i}`}>
-              <audio controls style={{width: 200}} src={audioURL} />
+              <audio controls style={{width: 200}} src={audioURL}/>
               <div>
                 <Button size="small" variant="contained" color="primary" type="submit" onClick={() => this.deleteAudio(audioURL)}>Delete</Button>
               </div>

@@ -48,23 +48,23 @@ class AudioRecord extends React.Component {
     this.mediaRecorder.stop();
     // say that we're not recording
     this.setState({recording: false});
-    // save the video to memory
+    // save the audio to memory
     this.saveAudio();
   }
 
   saveAudio() {
     // convert saved chunks to blob
     const blob = new Blob(this.chunks, {type: audioType});
-    // generate video url from blob
+    // generate audio url from blob
     const audioURL = window.URL.createObjectURL(blob);
-    // append videoURL to list of saved videos for rendering
+    // append audioURL to list of saved audios for rendering
     const audios = this.state.audios.concat([audioURL]);
     this.setState({audios});
     this.props.setFiles(audios);
   }
 
   deleteAudio(audioURL) {
-    // filter out current videoURL from the list of saved videos
+    // filter out current audioURL from the list of saved audios
     const audios = this.state.audios.filter(a => a !== audioURL);
     this.setState({audios});
   }
@@ -89,7 +89,9 @@ class AudioRecord extends React.Component {
           <h3>Recorded audios:</h3>
           {audios.map((audioURL, i) => (
             <div key={`audio_${i}`}>
-              <audio controls style={{width: 200}} src={audioURL}/>
+              <audio controls style={{width: 200}} src={audioURL}>
+                <a href={audioURL}>Download</a>
+              </audio>
               <div>
                 <Button size="small" variant="contained" color="primary" type="submit" onClick={() => this.deleteAudio(audioURL)}>Delete</Button>
               </div>

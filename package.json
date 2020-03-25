@@ -19,9 +19,8 @@
     "react-dom": "^16.13.0",
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.0",
-    "throttle-debounce": "^2.1.0",
-    "mic-recorder-to-mp3": "^2.2.1"
+    "react-scripts": "3.4.0",
+    "throttle-debounce": "^2.1.0"
   },
   "engines": {
     "node": "13.x",

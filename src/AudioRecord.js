@@ -1,6 +1,7 @@
 import React from 'react';
 import MicRecorder from 'mic-recorder-to-mp3';
 import Button from "@material-ui/core/Button";
+import { ReactMic } from 'react-mic';
 
 const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 
@@ -37,11 +38,31 @@ class AudioRecord extends React.Component {
         this.props.setFiles(blob)
       }).catch((e) => console.log(e));
   };
+  startRecording = () => {
+    this.setState({ isRecording: true });
+  }
 
+  stopRecording = () => {
+    this.setState({ isRecording: false });
+  }
+
+  onData(recordedBlob) {
+    console.log('chunk of real-time data is: ', recordedBlob);
+  }
+  onStop(recordedBlob) {
+    console.log('recordedBlob is: ', recordedBlob);
+  }
   render(){
     return (
       <div className="App">
         <header className="App-header">
+          <ReactMic
+            record={this.state.isRecording}
+            className="sound-wave"
+            onStop={this.onStop}
+            onData={this.onData}
+            strokeColor="#000000"
+            backgroundColor="#1a53b0"/>
           <Button onClick={this.start} disabled={this.state.isRecording}>Record</Button>
           <Button onClick={this.stop} disabled={!this.state.isRecording}>Stop</Button>
           <audio src={this.state.blobURL} id= "aud" controls="controls" />

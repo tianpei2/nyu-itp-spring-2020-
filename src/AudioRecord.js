@@ -44,12 +44,7 @@ export default class AudioRecord extends React.Component {
       this.mediaRecorder.addEventListener("stop", () => {
         const audioBlob = new Blob(this.audioChunks);
         const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
-        const play = () => {
-          audio.play();
-        };
-
-        resolve({ audioBlob, audioUrl, play });
+        resolve({ audioBlob, audioUrl });
       });
 
       if (this.mediaRecorder && this.mediaRecorder.state === "recording") {

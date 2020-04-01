@@ -13,7 +13,6 @@ export default class AudioRecord extends React.Component {
     };
 
     this.mediaRecorder = {};
-    this.audioChunks = [];
 
     this.micCallback = this.micCallback.bind(this);
     this.handleStream = this.handleStream.bind(this);

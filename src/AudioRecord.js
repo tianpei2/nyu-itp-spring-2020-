@@ -1,111 +1,78 @@
-import React from "react";
-import ReactWaves from "@dschoon/react-waves";
+import React from 'react';
+import MicRecorder from 'mic-recorder-to-mp3';
 import Button from "@material-ui/core/Button";
+import { ReactMic } from 'react-mic';
 
-export default class AudioRecord extends React.Component {
-  constructor(props) {
+
+const Mp3Recorder = new MicRecorder({ bitRate: 128 });
+
+class AudioRecord extends React.Component {
+  constructor(props){
     super(props);
-
     this.state = {
-      micRecord: false,
-      micInstance: {},
-      audio: "",
+      isRecording: false,
+      blobURL: '',
+      isBlocked: false,
     };
-
-    this.mediaRecorder = {};
-
-    this.micCallback = this.micCallback.bind(this);
-    this.handleStream = this.handleStream.bind(this);
-    this.handleAudioOutput = this.handleAudioOutput.bind(this);
-    this.startMic = this.startMic.bind(this);
-    this.stopMic = this.stopMic.bind(this);
   }
 
-  micCallback({ micInstance, stream }) {
-    if (micInstance) {
-      this.setState({ micInstance });
-    } else if (stream) {
-      this.handleStream(stream);
+  start = () => {
+    if (this.state.isBlocked) {
+      console.log('Permission Denied');
+    } else {
+      Mp3Recorder
+        .start()
+        .then(() => {
+          this.setState({ isRecording: true });
+        }).catch((e) => console.error(e));
     }
+  };
+
+
+  stop = () => {
+    Mp3Recorder
+      .stop()
+      .getMp3()
+      .then(([buffer, blob]) => {
+        const blobURL = URL.createObjectURL(blob)
+        this.setState({ blobURL, isRecording: false });
+        this.props.setFiles(blob)
+      }).catch((e) => console.log(e));
+  };
+  startRecording = () => {
+    this.setState({ isRecording: true });
   }
 
-  handleStream(stream) {
-    this.mediaRecorder = new MediaRecorder(stream);
-    this.mediaRecorder.start();
-
-    this.mediaRecorder.addEventListener("dataavailable", (event) => {
-      this.audioChunks = [];
-      this.audioChunks.push(event.data);
-    });
+  stopRecording = () => {
+    this.setState({ isRecording: false });
   }
 
-  handleAudioOutput() {
-    return new Promise((resolve) => {
-      this.mediaRecorder.addEventListener("stop", () => {
-        const audioBlob = new Blob(this.audioChunks);
-        const audioUrl = URL.createObjectURL(audioBlob);
-        resolve({ audioBlob, audioUrl });
-      });
-
-      if (this.mediaRecorder && this.mediaRecorder.state === "recording") {
-        this.mediaRecorder.stop();
-      }
-    });
+  onData(recordedBlob) {
+    console.log('chunk of real-time data is: ', recordedBlob);
+  }
+  onStop(recordedBlob) {
+    console.log('recordedBlob is: ', recordedBlob);
   }
 
-  startMic() {
-    if (!this.state.micInstance.active) {
-      this.state.micInstance.start();
-      this.setState({ micRecord: true });
-    }
-  }
-
-  stopMic() {
-    if (this.state.micInstance.active) {
-      this.state.micInstance.stop();
-
-      console.log("stopping");
-
-      this.handleAudioOutput().then(({ audioBlob, audioUrl }) => {
-        this.setState({ micRecord: false, audio: audioUrl });
-        this.props.setFiles(audioBlob);
-      });
-    }
-  }
-
-  render() {
+  render(){
     return (
-      <div className={"container example"}>
-        <Button onClick={this.startMic} disabled={this.state.micRecord}>
-          Record
-        </Button>
-        <Button onClick={this.stopMic} disabled={!this.state.micRecord}>
-          Stop
-        </Button>
-        <ReactWaves
-          className={"react-waves"}
-          options={{
-            barHeight: 4,
-            barWidth: 2,
-            cursorWidth: 0,
-            height: 100,
-            hideScrollbar: true,
-            progressColor: "#EC407A",
-            responsive: true,
-            waveColor: "#D1D6DA",
-          }}
-          playing={this.state.micRecord}
-          volume={1}
-          zoom={1}
-          micCallback={this.micCallback}
-        />
-        <audio
-          src={this.state.audio}
-          id="aud"
-          controls="controls"
-          style={{ width: 200 }}
-        />
+
+      <div className="App" >
+        <header className="App-header" >
+          <ReactMic
+            record={this.state.isRecording}
+            className="sound-wave"
+            onStop={this.onStop}
+            onData={this.onData}
+            strokeColor="#FFFFFF"
+            backgroundColor="#3B44C4"/>
+          <Button onClick={this.start} disabled={this.state.isRecording} >Record</Button>
+          <Button onClick={this.stop} disabled={!this.state.isRecording} >Stop</Button>
+          <audio src={this.state.blobURL} id= "aud" controls="controls"/>
+      </header>
       </div>
     );
   }
 }
+
+export default AudioRecord;

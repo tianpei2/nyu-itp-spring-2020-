@@ -7,11 +7,13 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import React from "react";
-import Grid from "@material-ui/core/Grid";
+import Grid from '@material-ui/core/Grid';
 
 import FoursquareSuggest from "./FoursquareSuggest";
 import foursquare from "./APIClient";
-import AudioRecord from "./AudioRecord";
+import AudioRecord from './AudioRecord'
+
+
 const useStyles = makeStyles(theme => ({
   dropzone: {
     textAlign: "center",
@@ -37,7 +39,8 @@ export default function AudioUpload() {
     if (files instanceof Blob) {
       formData.append("ext", "mp3");
       formData.append("file", files);
-    } else {
+    }
+    else {
       if (!files.length) return alert("No audio file selected.");
       const ext = files[0].name.split(".").pop();
       formData.append("ext", ext);
@@ -63,8 +66,8 @@ export default function AudioUpload() {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box pt={4}>
+    <Container component="main" maxWidth="sm"  container direction="column" justify="space-between" alignItems="center">
+      <Box mt={2}>
         <Typography component="h1" variant="h5">
           Upload an audio
         </Typography>
@@ -82,8 +85,8 @@ export default function AudioUpload() {
               label="Set jingle"
             />
           </RadioGroup>
-          <Grid container spacing={3}>
-            <Grid item xs={6}>
+          <Grid container spacing = {2}>
+            <Grid item xs={12}>
               <FormControl fullWidth margin="normal">
                 <DropzoneArea
                   dropzoneText={"Drag 'n' drop, or click to select"}
@@ -95,10 +98,11 @@ export default function AudioUpload() {
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={6}>
-              <AudioRecord setFiles={setFiles} />
+            <Grid item xs={12} container justify="center"
+  alignItems="center">
+                <AudioRecord setFiles={setFiles}/>
             </Grid>
-          </Grid>
+          <Grid item xs={12}>
           <FormControl fullWidth margin="normal">
             <Button
               type="submit"
@@ -109,6 +113,8 @@ export default function AudioUpload() {
               Submit
             </Button>
           </FormControl>
+          </Grid>
+          </Grid>
         </form>
       </Box>
     </Container>

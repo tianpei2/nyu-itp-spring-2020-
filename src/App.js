@@ -9,9 +9,9 @@ import React from "react";
 
 import AttachForm from "./AttachForm";
 import AudioUpload from "./AudioUpload.js";
+import ChannelBrowse from './ChannelBrowse';
 import ChannelDelete from "./ChannelDelete";
 import ChannelForm from "./ChannelForm";
-import ChannelList from "./ChannelList";
 import ChannelView from "./ChannelView";
 import MarsbotHome from "./MarsbotHome";
 import Nav from "./Nav";
@@ -19,6 +19,8 @@ import NoMatch404 from "./NoMatch";
 import SettingForm from "./SettingForm";
 import SignIn from "./SignIn";
 import User from "./User";
+import UserChannels from './UserChannels';
+import UserSubscriptions from './UserSubscriptions';
 
 function RouteSwitch() {
   const location = useLocation();
@@ -45,14 +47,14 @@ function RouteSwitch() {
         <Route path="/channel/:id">
           <ChannelView />
         </Route>
-        <Route path="/user/:id/channels">
-          <ChannelList action="fetchByOwner" />
-        </Route>
         <Route path="/channels">
-          <ChannelList action="fetchByOwner" />
+          <ChannelBrowse />
         </Route>
-        <Route path="/subscriptions">
-          <ChannelList action="fetchSubscribed" />
+        <Route path="/user/:id/channels">
+          <UserChannels />
+        </Route>
+        <Route path="/user/:id/subscriptions">
+          <UserSubscriptions />
         </Route>
         <Route path="/settings/name">
           <MarsbotHome />

@@ -13,10 +13,15 @@ import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import React from "react";
 
 import ListActionItem from "./ListActionItem";
+import SubscribeIcon from "./SubscribeIcon";
 import User from "./User";
 import foursquare from "./APIClient";
 
 const useStyles = makeStyles((theme) => ({
+  heroContent: {
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(6, 0, 6),
+  },
   cardGrid: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(8),
@@ -40,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ChannelList({ action }) {
+export default function ChannelList({ action, title }) {
   const classes = useStyles();
   const location = useLocation();
   const { user } = React.useContext(User.Context);
@@ -58,6 +63,9 @@ export default function ChannelList({ action }) {
   }, [action, userId, location]);
 
   const renderChannel = (channel, index) => {
+    const subscribed = Boolean(
+      channel.subscribers.filter((u) => u.id === user.id)[0]
+    );
     return (
       <Grid item key={channel.id} xs={12} sm={6} md={4}>
         <Card className={classes.card}>
@@ -74,35 +82,37 @@ export default function ChannelList({ action }) {
             </Typography>
             <Typography>{channel.description}</Typography>
 
-            {/* <SubscribeIcon */}
-            {/*   channelId={channel.id} */}
-            {/*   subscribed={true} // TODO: use channel.subscribed */}
-            {/*   className={classes.subscribe} */}
-            {/* /> */}
+            <SubscribeIcon
+              channelId={channel.id}
+              subscribed={subscribed}
+              className={classes.subscribe}
+            />
           </CardContent>
-          <CardActions>
-            {/* <ListActionItem icon={FavoriteBorder} text="Subscribe" /> */}
+          {user.id === channel.user.id && (
+            <CardActions>
+              {/* <ListActionItem icon={FavoriteBorder} text="Subscribe" /> */}
 
-            <ListActionItem
-              icon={EditOutlined}
-              edge="start"
-              text="Edit"
-              component={RouterLink}
-              to={{
-                pathname: `/channel/${channel.id}/edit`,
-                state: { background: location, channel: channel },
-              }}
-            />
-            <ListActionItem
-              icon={DeleteOutline}
-              text="Delete"
-              component={RouterLink}
-              to={{
-                pathname: `/channel/${channel.id}/delete`,
-                state: { background: location },
-              }}
-            />
-          </CardActions>
+              <ListActionItem
+                icon={EditOutlined}
+                edge="start"
+                text="Edit"
+                component={RouterLink}
+                to={{
+                  pathname: `/channel/${channel.id}/edit`,
+                  state: { background: location, channel: channel },
+                }}
+              />
+              <ListActionItem
+                icon={DeleteOutline}
+                text="Delete"
+                component={RouterLink}
+                to={{
+                  pathname: `/channel/${channel.id}/delete`,
+                  state: { background: location },
+                }}
+              />
+            </CardActions>
+          )}
         </Card>
       </Grid>
     );
@@ -110,6 +120,18 @@ export default function ChannelList({ action }) {
 
   return (
     <React.Fragment>
+      <div className={classes.heroContent}>
+        <Container maxWidth="sm">
+          <Typography
+            component="h1"
+            variant="h3"
+            align="center"
+            color="textPrimary"
+          >
+            {title}
+          </Typography>
+        </Container>
+      </div>
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
           {channels.map(renderChannel)}

@@ -14,13 +14,7 @@ import {
   Typography,
   useScrollTrigger,
 } from "@material-ui/core";
-import {
-  PlaylistAdd,
-  Publish,
-  Apps,
-  Subscriptions,
-  MoreVert,
-} from "@material-ui/icons";
+import { PlaylistAdd, Publish, Apps, MoreVert } from '@material-ui/icons';
 import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
@@ -86,12 +80,13 @@ export default function Nav(props) {
     menus = [];
   if (user) {
     tabs = [
-      [`/user/${user.id}/channels`, <Apps />, null, "My channels"],
-      ["/subscriptions", <Subscriptions />, null, "Subscribed channels"],
+      ["/channels", <Apps />, null, "Browse all channels"],
       ["/channel/create", <PlaylistAdd />, background, "Create a new channel"],
       ["/audio/upload", <Publish />, background, "Upload an audio"],
     ];
     menus = [
+      [`/user/${user.id}/channels`, null, "My channels"],
+      [`/user/${user.id}/subscriptions`, null, "My Subscriptions"],
       ["/settings/name", background, "Set Name"],
       ["/settings/jingle", background, "Set Jingle"],
     ];

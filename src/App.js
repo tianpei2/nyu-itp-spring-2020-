@@ -9,18 +9,19 @@ import React from "react";
 
 import AttachForm from "./AttachForm";
 import AudioUpload from "./AudioUpload.js";
-import ChannelBrowse from './ChannelBrowse';
+import ChannelBrowse from "./ChannelBrowse";
 import ChannelDelete from "./ChannelDelete";
 import ChannelForm from "./ChannelForm";
 import ChannelView from "./ChannelView";
+import FlashSnackbar, { FlashContext } from "./FlashSnackbar";
 import MarsbotHome from "./MarsbotHome";
 import Nav from "./Nav";
 import NoMatch404 from "./NoMatch";
 import SettingForm from "./SettingForm";
 import SignIn from "./SignIn";
 import User from "./User";
-import UserChannels from './UserChannels';
-import UserSubscriptions from './UserSubscriptions';
+import UserChannels from "./UserChannels";
+import UserSubscriptions from "./UserSubscriptions";
 
 function RouteSwitch() {
   const location = useLocation();
@@ -97,12 +98,16 @@ function RouteSwitch() {
           </Route>
         </>
       )}
+
+      <FlashSnackbar />
     </>
   );
 }
 
 export default function App() {
   const [user, setUser] = React.useState(null);
+  const [alert, setAlert] = React.useState(null);
+  window.setAlert = setAlert; // FIXME: remove global function
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -113,9 +118,11 @@ export default function App() {
   return (
     <Router>
       <User.Context.Provider value={{ user, setUser }}>
-        <CssBaseline />
-        <Nav />
-        {user ? <RouteSwitch /> : <SignIn />}
+        <FlashContext.Provider value={{ alert, setAlert }}>
+          <CssBaseline />
+          <Nav />
+          {user ? <RouteSwitch /> : <SignIn />}
+        </FlashContext.Provider>
       </User.Context.Provider>
     </Router>
   );

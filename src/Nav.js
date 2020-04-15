@@ -69,7 +69,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Nav(props) {
-  const popupState = usePopupState({ variant: "popper", popupId: "demoMenu" });
+  const popupState = usePopupState({
+    variant: "popper",
+    popupId: "account-menu",
+  });
   const { user, setUser } = React.useContext(User.Context);
   const history = useHistory();
   const location = useLocation();
@@ -93,6 +96,8 @@ export default function Nav(props) {
   }
   const path = location.pathname;
   const active = tabs.filter((t) => t[0] === path).length ? path : false;
+
+  React.useEffect(popupState.close, [location]);
 
   const handleLogOut = () => {
     User.signOut();

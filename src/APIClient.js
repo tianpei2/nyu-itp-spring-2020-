@@ -1,5 +1,5 @@
-import axios from "axios";
 import Cookies from "js-cookie";
+import axios from "axios";
 
 export const tokenCookieKey = "foursquare_oauth_token";
 
@@ -25,7 +25,7 @@ foursquare.interceptors.response.use(
       let message = error.message;
       const response = error.response;
       if (response) message = `${message}: ${response.data.meta.errorDetail}`;
-      alert(message);
+      window.setAlert({ severity: "error", message });
     }
     return Promise.reject(error);
   }

@@ -14,6 +14,10 @@ export default function AudioUpload({ type }) {
       extraInputs={
         <input name={`set${capitalize(type)}`} type="hidden" value="1" />
       }
+      alert={{
+        severity: "success",
+        message: `Your ${type} audio was updated successfully.`,
+      }}
     />
   );
 }

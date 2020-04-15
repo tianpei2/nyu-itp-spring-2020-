@@ -10,6 +10,7 @@ export default function AudioForm({
   title,
   extraInputs,
   recorderMargin = "normal",
+  alert,
   ...props
 }) {
   const history = useHistory();
@@ -30,7 +31,9 @@ export default function AudioForm({
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
-        history.push(background || "/");
+        history.push(background || "/", {
+          alert: alert,
+        });
       });
   };
 

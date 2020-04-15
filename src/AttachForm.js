@@ -3,7 +3,7 @@ import {
   Checkbox,
   CircularProgress,
   makeStyles,
-} from '@material-ui/core';
+} from "@material-ui/core";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import React from "react";
 

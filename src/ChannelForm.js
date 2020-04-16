@@ -40,6 +40,7 @@ export default function ChannelForm() {
       closeURL="/"
       content={
         <>
+          <input name="id" type="hidden" value={channel.id} />
           <TextField
             name="title"
             value={channel.title}

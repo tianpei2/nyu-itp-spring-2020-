@@ -6,8 +6,16 @@ import qs from "qs";
 import foursquare from "./APIClient";
 
 export default function SubscribeIcon(props) {
-  const { channelId, className } = props;
-  const [subscribed, setSubscribed] = React.useState(Boolean(props.subscribed));
+  const {
+    channelId,
+    className,
+    edge,
+    subscribed: defaultSubscribed,
+    ...rest
+  } = props;
+  const [subscribed, setSubscribed] = React.useState(
+    Boolean(defaultSubscribed)
+  );
 
   const handleSubscribe = () => {
     foursquare
@@ -23,11 +31,12 @@ export default function SubscribeIcon(props) {
 
   return (
     <IconButton
-      edge="end"
+      edge={edge}
       aria-label="subscribe"
       className={className}
       color={subscribed ? "secondary" : "default"}
       onClick={handleSubscribe}
+      {...rest}
     >
       <Favorite />
     </IconButton>

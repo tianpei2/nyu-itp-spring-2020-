@@ -23,7 +23,7 @@ export default class User {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.contact.email,
-      profile: user.canonicalUrl,
+      profile: user.canonicalUrl || `https://foursquare.com/user/${user.id}`,
       picture: `${user.photo.prefix}100x100${user.photo.suffix}`,
     };
   }

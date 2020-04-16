@@ -1,18 +1,18 @@
 import {
+  Avatar,
   Card,
-  CardActions,
   CardContent,
+  CardHeader,
   CardMedia,
   Container,
   Grid,
+  Link,
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import { DeleteOutline, EditOutlined } from "@material-ui/icons";
-import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
+import { Link as RouterLink, useLocation, useParams } from 'react-router-dom';
 import React from "react";
 
-import ListActionItem from "./ListActionItem";
 import SubscribeIcon from "./SubscribeIcon";
 import User from "./User";
 import foursquare from "./APIClient";
@@ -32,20 +32,15 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
   },
+  cardHeaderContent: {
+    minWidth: 0,
+  },
   cardMedia: {
     paddingTop: "56.25%", // 16:9
   },
-  cardContent: {
-    flexGrow: 1,
-  },
-  subscribe: {
-    position: "absolute",
-    top: "5%",
-    right: "5%",
-  },
 }));
 
-export default function ChannelList({ action, title }) {
+export default function ChannelList({ action, title, cardAction }) {
   const classes = useStyles();
   const location = useLocation();
   const { user } = React.useContext(User.Context);
@@ -63,12 +58,40 @@ export default function ChannelList({ action, title }) {
   }, [action, userId, location]);
 
   const renderChannel = (channel, index) => {
+    channel.user = User.transform(channel.user);
+    channel.path = `/channel/${channel.id}`;
     const subscribed = Boolean(
       channel.subscribers.filter((u) => u.id === user.id)[0]
     );
+
     return (
       <Grid item key={channel.id} xs={12} sm={6} md={4}>
         <Card className={classes.card}>
+          <CardHeader
+            avatar={
+              <Link href={channel.user.profile} target="_blank" rel="noopener">
+                <Avatar alt={channel.user.name} src={channel.user.picture} />
+              </Link>
+            }
+            action={
+              <SubscribeIcon channelId={channel.id} subscribed={subscribed} />
+            }
+            title={
+              <Link
+                underline="none"
+                color="inherit"
+                component={RouterLink}
+                to={`/channel/${channel.id}`}
+              >
+                {channel.title}
+              </Link>
+            }
+            titleTypographyProps={{
+              noWrap: true,
+            }}
+            subheader={channel.createDate}
+            classes={{ content: classes.cardHeaderContent }}
+          />
           <CardMedia
             className={classes.cardMedia}
             image={`https://source.unsplash.com/random?${index}&id=${channel.id}`}
@@ -76,43 +99,12 @@ export default function ChannelList({ action, title }) {
             component={RouterLink}
             to={`/channel/${channel.id}`}
           />
-          <CardContent className={classes.cardContent}>
-            <Typography gutterBottom variant="h5" component="h2">
-              {channel.title}
+          <CardContent>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {channel.description}
             </Typography>
-            <Typography>{channel.description}</Typography>
-
-            <SubscribeIcon
-              channelId={channel.id}
-              subscribed={subscribed}
-              className={classes.subscribe}
-            />
           </CardContent>
-          {user.id === channel.user.id && (
-            <CardActions>
-              {/* <ListActionItem icon={FavoriteBorder} text="Subscribe" /> */}
-
-              <ListActionItem
-                icon={EditOutlined}
-                edge="start"
-                text="Edit"
-                component={RouterLink}
-                to={{
-                  pathname: `/channel/${channel.id}/edit`,
-                  state: { background: location, channel: channel },
-                }}
-              />
-              <ListActionItem
-                icon={DeleteOutline}
-                text="Delete"
-                component={RouterLink}
-                to={{
-                  pathname: `/channel/${channel.id}/delete`,
-                  state: { background: location },
-                }}
-              />
-            </CardActions>
-          )}
+          {cardAction && cardAction(channel)}
         </Card>
       </Grid>
     );

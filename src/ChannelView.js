@@ -1,4 +1,4 @@
-import { Add, DeleteOutline, EditOutlined } from "@material-ui/icons";
+import { Add, DeleteOutline, EditOutlined, Publish } from "@material-ui/icons";
 import {
   Avatar,
   Backdrop,
@@ -20,8 +20,8 @@ import React from "react";
 import qs from "qs";
 
 import AudioList from "./AudioList";
-import NoMatch404 from "./NoMatch";
 import ListActionItem from "./ListActionItem";
+import NoMatch404 from "./NoMatch";
 import SubscribeIcon from "./SubscribeIcon";
 import User from "./User";
 import foursquare from "./APIClient";
@@ -48,10 +48,11 @@ export default function ChannelView() {
       })
       .then((channel) => {
         channel.id = id;
+        channel.path = `/channel/${id}`;
         setChannel(channel);
         const path = location.pathname;
-        if (path.endsWith("/edit")) {
-          location.pathname = `/channel/${id}`;
+        if (path !== channel.path) {
+          location.pathname = channel.path;
           history.replace(path, {
             background: location,
             channel: channel,
@@ -102,7 +103,16 @@ export default function ChannelView() {
           </Link>
           <div>
             <ListItemText
-              primary={channel.title}
+              primary={
+                <Link
+                  color="inherit"
+                  underline="none"
+                  component={RouterLink}
+                  to={channel.path}
+                >
+                  {channel.title}
+                </Link>
+              }
               secondary={channel.description}
               primaryTypographyProps={{
                 component: "h1",
@@ -114,11 +124,20 @@ export default function ChannelView() {
                 <ListActionItem
                   edge="start"
                   icon={Add}
-                  text="Add audio"
+                  text="Add"
                   component={RouterLink}
                   to={{
-                    pathname: `/channel/${channel.id}/attach`,
+                    pathname: `${channel.path}/attach`,
                     state: { background: location },
+                  }}
+                />
+                <ListActionItem
+                  icon={Publish}
+                  text="Upload"
+                  component={RouterLink}
+                  to={{
+                    pathname: `${channel.path}/upload`,
+                    state: { background: location, channel: channel },
                   }}
                 />
                 <ListActionItem
@@ -126,7 +145,7 @@ export default function ChannelView() {
                   text="Edit"
                   component={RouterLink}
                   to={{
-                    pathname: `/channel/${channel.id}/edit`,
+                    pathname: `${channel.path}/edit`,
                     state: { background: location, channel: channel },
                   }}
                 />
@@ -135,7 +154,7 @@ export default function ChannelView() {
                   text="Delete"
                   component={RouterLink}
                   to={{
-                    pathname: `/channel/${channel.id}/delete`,
+                    pathname: `${channel.path}/delete`,
                     state: { background: location },
                   }}
                 />

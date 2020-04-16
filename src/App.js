@@ -84,6 +84,9 @@ function RouteSwitch() {
           <Route path="/channel/:id/attach">
             <AttachForm />
           </Route>
+          <Route path="/channel/:id/upload">
+            <AudioUpload />
+          </Route>
           <Route path="/channel/:id/edit">
             <ChannelForm />
           </Route>

@@ -10,7 +10,8 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import { Link as RouterLink, useLocation, useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import React from "react";
 
 import SubscribeIcon from "./SubscribeIcon";
@@ -112,6 +113,9 @@ export default function ChannelList({ action, title, cardAction }) {
 
   return (
     <React.Fragment>
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
       <div className={classes.heroContent}>
         <Container maxWidth="sm">
           <Typography

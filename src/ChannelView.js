@@ -9,6 +9,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
 } from "@material-ui/core";
+import { Helmet } from 'react-helmet';
 import {
   Link as RouterLink,
   useHistory,
@@ -116,6 +117,10 @@ export default function ChannelView() {
       audios={audios}
       header={
         <ListItem divider key="title">
+          <Helmet>
+            <title>{channel.title}</title>
+          </Helmet>
+
           <Link href={channel.user.profile} target="_blank" rel="noopener">
             <ListItemAvatar>
               <Avatar alt={channel.user.name} src={channel.user.picture} />

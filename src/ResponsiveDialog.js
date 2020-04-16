@@ -14,6 +14,7 @@ import {
   useTheme,
 } from "@material-ui/core";
 import { Close, Done } from "@material-ui/icons";
+import { Helmet } from 'react-helmet';
 import { useHistory, useLocation } from "react-router-dom";
 import React from "react";
 
@@ -62,6 +63,9 @@ export default function ResponsiveDialog({
       {...rest}
     >
       <form onSubmit={handleSubmit}>
+        <Helmet>
+          <title>{title}</title>
+        </Helmet>
         {fullScreen ? (
           <AppBar>
             <Toolbar>

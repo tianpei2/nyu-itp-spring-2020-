@@ -1,4 +1,5 @@
 import { CssBaseline } from "@material-ui/core";
+import { Helmet } from "react-helmet";
 import {
   BrowserRouter as Router,
   Switch,
@@ -116,6 +117,9 @@ export default function App() {
 
   return (
     <Router>
+      <Helmet titleTemplate="Marsbot Audio » %s">
+        <title>Home</title>
+      </Helmet>
       <User.Context.Provider value={{ user, setUser }}>
         <FlashContext.Provider value={{ alert, setAlert }}>
           <CssBaseline />

@@ -28,6 +28,7 @@ export default function AttachForm() {
   const { user } = React.useContext(User.Context);
   const [loading, setLoading] = React.useState(true);
   const [audios, setAudios] = React.useState([]);
+  const input = "audioFileId";
 
   React.useEffect(() => {
     foursquare
@@ -39,8 +40,16 @@ export default function AttachForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const idsMap = audios.reduce(
+      (a, e) => ({ ...a, [e.id]: e.venues[0].id }),
+      {}
+    );
     const formData = new FormData(event.target);
-    // TODO: update audioFileId field
+    const audioIds = formData.getAll(input);
+    const venueIds = audioIds.map((aid) => idsMap[aid]);
+    formData.delete(input);
+    formData.append(input, audioIds);
+    formData.append("venueIds", venueIds);
     return foursquare
       .post("demo/marsbot/audio/channels/attach", formData)
       .then((response) => {
@@ -66,7 +75,7 @@ export default function AttachForm() {
           <AudioList
             audios={audios}
             withMap={false}
-            action={(audio) => <Checkbox name="audioFileId" value={audio.id} />}
+            action={(audio) => <Checkbox name={input} value={audio.id} />}
           />
         </>
       }

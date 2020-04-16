@@ -47,39 +47,59 @@ export default function ChannelView() {
         ejectErrorAlert: true,
       })
       .then((channel) => {
-        channel.id = id;
         channel.path = `/channel/${id}`;
+        channel.user = User.transform(channel.user);
         setChannel(channel);
-        const path = location.pathname;
-        if (path !== channel.path) {
-          location.pathname = channel.path;
-          history.replace(path, {
-            background: location,
-            channel: channel,
-          });
-        }
       })
       .catch((error) => {})
       .then(() => setLoading(false));
-  }, [id, user, history, location]);
+  }, [id, location]);
 
-  const handleRemoveAudio = (audioId) => {
+  React.useEffect(() => {
+    if (!(channel && channel.content[0])) return;
+    const audioIds = new Set(channel.content.map((a) => a.audioFileId));
+
+    foursquare
+      .getUserAudios(user.id)
+      .then((audios) =>
+        setAudios(audios.filter((a) => a.venues[0] && audioIds.has(a.id)))
+      );
+  }, [channel, user]);
+
+  React.useEffect(() => {
+    if (!channel) return;
+    const path = location.pathname;
+    if (path !== channel.path) {
+      location.pathname = channel.path;
+      history.replace(path, {
+        background: location,
+        channel: channel,
+      });
+    }
+  }, [channel, history, location]);
+
+  const handleRemoveAudio = (audioFileId) => {
     if (
       !window.confirm(
         "Are you sure you want to remove this audio from this channel?"
       )
     )
       return;
+    const venueIds = channel.content
+      .filter((a) => a.audioFileId === audioFileId)
+      .map((a) => a.venueId)
+      .join(",");
     foursquare
       .post(
         "demo/marsbot/audio/channels/attach",
         qs.stringify({
           id,
-          audioFileId: audioId,
+          venueIds,
+          audioFileId,
           attached: false,
         })
       )
-      .then((resp) => setAudios(audios.filter((a) => a.id !== audioId)));
+      .then((resp) => setAudios(audios.filter((a) => a.id !== audioFileId)));
   };
 
   if (loading)
@@ -96,9 +116,9 @@ export default function ChannelView() {
       audios={audios}
       header={
         <ListItem divider key="title">
-          <Link href={user.profile} target="_blank" rel="noopener">
+          <Link href={channel.user.profile} target="_blank" rel="noopener">
             <ListItemAvatar>
-              <Avatar alt={user.name} src={user.picture} />
+              <Avatar alt={channel.user.name} src={channel.user.picture} />
             </ListItemAvatar>
           </Link>
           <div>
@@ -163,7 +183,7 @@ export default function ChannelView() {
           </div>
 
           <ListItemSecondaryAction>
-            <SubscribeIcon channelId={id} subscribed={subscribed} />
+            <SubscribeIcon edge="end" channelId={id} subscribed={subscribed} />
           </ListItemSecondaryAction>
         </ListItem>
       }

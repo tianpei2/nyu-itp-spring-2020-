@@ -16,6 +16,18 @@ export default class User {
     Object.assign(this, data);
   }
 
+  static transform(user) {
+    if (user.picture) return user;
+    return {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.contact.email,
+      profile: user.canonicalUrl,
+      picture: `${user.photo.prefix}100x100${user.photo.suffix}`,
+    };
+  }
+
   static async get(userId) {
     if (!Cookies.get(tokenCookieKey)) return null;
     const localStorageKey = `/user/${userId}`;
@@ -24,14 +36,7 @@ export default class User {
 
     const response = await foursquare.get(`/users/${userId}`);
     const user = response.user;
-    data = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.contact.email,
-      profile: user.canonicalUrl,
-      picture: `${user.photo.prefix}100x100${user.photo.suffix}`,
-    };
+    data = User.transform(user);
     window.localStorage.setItem(localStorageKey, JSON.stringify(data));
     return new User(data);
   }

@@ -41,10 +41,6 @@ function RouteSwitch() {
           <MarsbotHome />
           <ChannelForm />
         </Route>
-        <Route path="/channel/:id/attach">
-          <ChannelView />
-          <AttachForm />
-        </Route>
         <Route path="/channel/:id">
           <ChannelView />
         </Route>

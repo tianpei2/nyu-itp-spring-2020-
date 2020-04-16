@@ -67,7 +67,7 @@ export default function ChannelView() {
   }, [channel, user]);
 
   React.useEffect(() => {
-    if (!channel) return;
+    if (!channel || channel.user.id !== user.id) return;
     const path = location.pathname;
     if (path !== channel.path) {
       location.pathname = channel.path;
@@ -76,7 +76,7 @@ export default function ChannelView() {
         channel: channel,
       });
     }
-  }, [channel, history, location]);
+  }, [user, channel, history, location]);
 
   const handleRemoveAudio = (audioFileId) => {
     if (

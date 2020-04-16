@@ -7,6 +7,8 @@ import {
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import React from "react";
 
+import qs from "qs";
+
 import AudioList from "./AudioList";
 import ResponsiveDialog from "./ResponsiveDialog";
 import User from "./User";
@@ -38,7 +40,7 @@ export default function AttachForm() {
       .then(() => setLoading(false));
   }, [user]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const idsMap = audios.reduce(
       (a, e) => ({ ...a, [e.id]: e.venues[0].id }),
@@ -46,15 +48,19 @@ export default function AttachForm() {
     );
     const formData = new FormData(event.target);
     const audioIds = formData.getAll(input);
-    const venueIds = audioIds.map((aid) => idsMap[aid]);
-    formData.delete(input);
-    formData.append(input, audioIds);
-    formData.append("venueIds", venueIds);
-    return foursquare
-      .post("demo/marsbot/audio/channels/attach", formData)
-      .then((response) => {
-        history.push(background || `/channel/${id}`);
-      });
+
+    for (const audioFileId of audioIds) {
+      await foursquare.post(
+        "demo/marsbot/audio/channels/attach",
+        qs.stringify({
+          id,
+          audioFileId,
+          venueIds: idsMap[audioFileId],
+          attached: true,
+        })
+      );
+    }
+    history.push(background || `/channel/${id}`);
   };
 
   if (loading)

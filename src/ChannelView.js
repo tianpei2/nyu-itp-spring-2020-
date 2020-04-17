@@ -8,6 +8,7 @@ import {
   ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
+  makeStyles,
 } from "@material-ui/core";
 import { Helmet } from "react-helmet";
 import {
@@ -27,10 +28,20 @@ import SubscribeIcon from "./SubscribeIcon";
 import User from "./User";
 import foursquare from "./APIClient";
 
+const useStyles = makeStyles((theme) => ({
+  listItemBody: {
+    minWidth: 0,
+  },
+  listItemActions: {
+    whiteSpace: "nowrap",
+  },
+}));
+
 export default function ChannelView() {
   let { id } = useParams();
   const history = useHistory();
   const location = useLocation();
+  const classes = useStyles();
   const { user } = React.useContext(User.Context);
   const [loading, setLoading] = React.useState(true);
   const [channel, setChannel] = React.useState(null);
@@ -121,7 +132,7 @@ export default function ChannelView() {
               <Avatar alt={channel.user.name} src={channel.user.picture} />
             </ListItemAvatar>
           </Link>
-          <div>
+          <div className={classes.listItemBody}>
             <ListItemText
               primary={
                 <Link
@@ -140,7 +151,7 @@ export default function ChannelView() {
               }}
             />
             {user.id === channel.user.id && (
-              <div>
+              <div className={classes.listItemActions}>
                 <ListActionItem
                   edge="start"
                   icon={Add}

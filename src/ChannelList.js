@@ -10,7 +10,7 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import { Helmet } from 'react-helmet';
+import { Helmet } from "react-helmet";
 import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import React from "react";
 
@@ -120,7 +120,7 @@ export default function ChannelList({ action, title, cardAction }) {
         <Container maxWidth="sm">
           <Typography
             component="h1"
-            variant="h3"
+            variant="h4"
             align="center"
             color="textPrimary"
           >

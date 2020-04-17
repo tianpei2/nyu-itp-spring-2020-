@@ -6,6 +6,7 @@ import {
   Container,
   makeStyles,
 } from "@material-ui/core";
+import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import React from "react";
 
@@ -21,7 +22,7 @@ function SignInButton(props) {
   } = process.env;
 
   const loc = window.location;
-  const state = window.btoa(loc.pathname + loc.search + loc.hash);
+  const state = window.btoa(loc.href.slice(loc.origin.length));
   session.setItem(oauthStateKey, state);
 
   const params = {
@@ -30,11 +31,7 @@ function SignInButton(props) {
     response_type: "code",
     state,
   };
-  const qs = Object.keys(params)
-    .map(
-      (key) => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])
-    )
-    .join("&");
+  const qs = new URLSearchParams(params).toString();
   const href = `${REACT_APP_FOURSQUARE_OAUTH2_URL}authenticate?${qs}`;
 
   return (
@@ -93,6 +90,9 @@ export default function SignIn(props) {
 
   return (
     <Container component="main" maxWidth="xs">
+      <Helmet>
+        <title>Sign In</title>
+      </Helmet>
       {code ? <SignInCallback code={code} state={state} /> : <SignInButton />}
     </Container>
   );

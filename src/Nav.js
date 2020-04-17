@@ -2,6 +2,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  Hidden,
   IconButton,
   Link,
   Menu,
@@ -14,7 +15,14 @@ import {
   Typography,
   useScrollTrigger,
 } from "@material-ui/core";
-import { PlaylistAdd, Publish, Apps, MoreVert } from '@material-ui/icons';
+import {
+  Apps,
+  Collections,
+  CollectionsBookmark,
+  MoreVert,
+  PlaylistAdd,
+  Publish,
+} from "@material-ui/icons";
 import { Link as RouterLink, useHistory, useLocation } from "react-router-dom";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
@@ -52,14 +60,15 @@ const NavTabItem = withStyles((theme) => ({
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
   },
-}))((props) => <Tab disableRipple {...props} />);
+}))(({ idx, ...props }) => (
+  <Hidden smDown={idx > 3}>
+    <Tab disableRipple {...props} />
+  </Hidden>
+));
 
 const useStyles = makeStyles((theme) => ({
   logo: {
     marginLeft: theme.spacing(1.5),
-    [theme.breakpoints.down("xs")]: {
-      display: "none",
-    },
   },
   appbar: {
     "& + *": {
@@ -68,36 +77,65 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Nav(props) {
+function NavLinks({ user }) {
+  const location = useLocation();
+  const background = { background: location };
+  const tabs = [
+    ["/channels", <Apps />, null, "Browse all channels"],
+    [`/user/${user.id}/channels`, <Collections />, null, "My channels"],
+    [
+      `/user/${user.id}/subscriptions`,
+      <CollectionsBookmark />,
+      null,
+      "My Subscriptions",
+    ],
+    ["/channel/create", <PlaylistAdd />, background, "Create a new channel"],
+    ["/audio/upload", <Publish />, background, "Upload an audio"],
+  ];
+  const path = location.pathname;
+  const active = tabs.filter((t) => t[0] === path)[0] ? path : false;
+
+  return (
+    <NavTabs variant="fullWidth" value={active}>
+      {tabs.map((t, idx) => {
+        const [path, icon, state, title] = t;
+        return (
+          <NavTabItem
+            key={path}
+            idx={idx}
+            component={RouterLink}
+            to={{
+              pathname: path,
+              state: state,
+            }}
+            value={path}
+            label={
+              <Tooltip title={title} aria-label={title}>
+                <IconButton color="inherit">{icon}</IconButton>
+              </Tooltip>
+            }
+          />
+        );
+      })}
+    </NavTabs>
+  );
+}
+
+function NavMenus() {
+  const history = useHistory();
+  const location = useLocation();
+  const background = { background: location };
+  const { user, setUser } = React.useContext(User.Context);
   const popupState = usePopupState({
     variant: "popper",
     popupId: "account-menu",
   });
-  const { user, setUser } = React.useContext(User.Context);
-  const history = useHistory();
-  const location = useLocation();
-  const classes = useStyles();
-
-  const background = { background: location };
-  let tabs = [],
-    menus = [];
-  if (user) {
-    tabs = [
-      ["/channels", <Apps />, null, "Browse all channels"],
-      ["/channel/create", <PlaylistAdd />, background, "Create a new channel"],
-      ["/audio/upload", <Publish />, background, "Upload an audio"],
-    ];
-    menus = [
-      [`/user/${user.id}/channels`, null, "My channels"],
-      [`/user/${user.id}/subscriptions`, null, "My Subscriptions"],
-      ["/settings/name", background, "Set Name"],
-      ["/settings/jingle", background, "Set Jingle"],
-    ];
-  }
-  const path = location.pathname;
-  const active = tabs.filter((t) => t[0] === path).length ? path : false;
-
-  React.useEffect(popupState.close, [location]);
+  const menus = [
+    [`/user/${user.id}/channels`, null, "My channels"],
+    [`/user/${user.id}/subscriptions`, null, "My Subscriptions"],
+    ["/settings/name", background, "Set Name"],
+    ["/settings/jingle", background, "Set Jingle"],
+  ];
 
   const handleLogOut = () => {
     User.signOut();
@@ -105,82 +143,76 @@ export default function Nav(props) {
     history.push("/");
   };
 
+  React.useEffect(popupState.close, [location]);
+
+  return (
+    <>
+      <IconButton
+        edge="end"
+        color="inherit"
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        {...bindTrigger(popupState)}
+      >
+        {/* <Avatar alt={user.name} src={user.picture} /> */}
+        <MoreVert />
+      </IconButton>
+      <Menu id="menu-appbar" {...bindMenu(popupState)}>
+        <MenuItem component={Link} href={user.profile} color="inherit">
+          {`${user.firstName}'s Profile`}
+        </MenuItem>
+        {menus.map((m) => {
+          const [path, state, title] = m;
+          return (
+            <MenuItem
+              component={RouterLink}
+              key={path}
+              to={{
+                pathname: path,
+                state: state,
+              }}
+            >
+              {title}
+            </MenuItem>
+          );
+        })}
+        <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
+      </Menu>
+    </>
+  );
+}
+
+export default function Nav(props) {
+  const { user } = React.useContext(User.Context);
+  const classes = useStyles();
+
   return (
     <HideOnScroll>
       <AppBar className={classes.appbar}>
         <Toolbar>
-          <IconButton
-            component={RouterLink}
-            to="/"
-            edge="start"
-            color="inherit"
-          >
-            <Avatar src="https://pbs.twimg.com/media/EN4Hl-jUwAAy0T5.jpg" />
-            <Typography variant="h6" component="h1" className={classes.logo}>
-              Marsbot Audio
-            </Typography>
-          </IconButton>
+          <Box display="flex" alignItems="center" flexGrow={1}>
+            <IconButton
+              component={RouterLink}
+              to="/"
+              edge="start"
+              color="inherit"
+            >
+              <Avatar src="https://pbs.twimg.com/media/EN4Hl-jUwAAy0T5.jpg" />
+              <Hidden smDown={Boolean(user)}>
+                <Typography
+                  variant="h6"
+                  component="h1"
+                  className={classes.logo}
+                >
+                  Marsbot Audio
+                </Typography>
+              </Hidden>
+            </IconButton>
+          </Box>
 
-          <Box display="flex" alignItems="center" flexGrow={1}></Box>
-
-          {user && (
-            <>
-              <NavTabs variant="fullWidth" value={active}>
-                {tabs.map((t) => {
-                  const [path, icon, state, title] = t;
-                  return (
-                    <NavTabItem
-                      component={RouterLink}
-                      key={path}
-                      to={{
-                        pathname: path,
-                        state: state,
-                      }}
-                      value={path}
-                      label={
-                        <Tooltip title={title} aria-label={title}>
-                          <IconButton color="inherit">{icon}</IconButton>
-                        </Tooltip>
-                      }
-                    />
-                  );
-                })}
-              </NavTabs>
-
-              <IconButton
-                edge="end"
-                color="inherit"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                {...bindTrigger(popupState)}
-              >
-                {/* <Avatar alt={user.name} src={user.picture} /> */}
-                <MoreVert />
-              </IconButton>
-              <Menu id="menu-appbar" {...bindMenu(popupState)}>
-                <MenuItem component={Link} href={user.profile} color="inherit">
-                  {`${user.firstName}'s Profile`}
-                </MenuItem>
-                {menus.map((m) => {
-                  const [path, state, title] = m;
-                  return (
-                    <MenuItem
-                      component={RouterLink}
-                      key={path}
-                      to={{
-                        pathname: path,
-                        state: state,
-                      }}
-                    >
-                      {title}
-                    </MenuItem>
-                  );
-                })}
-                <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
-              </Menu>
-            </>
-          )}
+          {user && <NavLinks user={user} />}
+          {user && <NavMenus />}
         </Toolbar>
       </AppBar>
     </HideOnScroll>

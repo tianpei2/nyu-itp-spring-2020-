@@ -51,22 +51,16 @@ export default function ChannelView() {
         channel.path = `/channel/${id}`;
         channel.user = User.transform(channel.user);
         setChannel(channel);
-        setAudios([]);
+        setAudios(
+          channel.content.map((a) => ({
+            id: a.audioFileId,
+            ...a,
+          }))
+        );
       })
       .catch((error) => {})
       .then(() => setLoading(false));
   }, [id, location]);
-
-  React.useEffect(() => {
-    if (!(channel && channel.content[0])) return;
-    const audioIds = new Set(channel.content.map((a) => a.audioFileId));
-
-    foursquare
-      .getUserAudios(user.id)
-      .then((audios) =>
-        setAudios(audios.filter((a) => a.venues[0] && audioIds.has(a.id)))
-      );
-  }, [channel, user]);
 
   React.useEffect(() => {
     if (!channel || id !== channel.id || channel.user.id !== user.id) return;
@@ -89,7 +83,7 @@ export default function ChannelView() {
       return;
     const venueIds = channel.content
       .filter((a) => a.audioFileId === audioFileId)
-      .map((a) => a.venueId)
+      .map((a) => a.venues[0].id)
       .join(",");
     foursquare
       .post(

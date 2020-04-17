@@ -9,7 +9,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
 } from "@material-ui/core";
-import { Helmet } from 'react-helmet';
+import { Helmet } from "react-helmet";
 import {
   Link as RouterLink,
   useHistory,
@@ -51,6 +51,7 @@ export default function ChannelView() {
         channel.path = `/channel/${id}`;
         channel.user = User.transform(channel.user);
         setChannel(channel);
+        setAudios([]);
       })
       .catch((error) => {})
       .then(() => setLoading(false));
@@ -68,7 +69,7 @@ export default function ChannelView() {
   }, [channel, user]);
 
   React.useEffect(() => {
-    if (!channel || channel.user.id !== user.id) return;
+    if (!channel || id !== channel.id || channel.user.id !== user.id) return;
     const path = location.pathname;
     if (path !== channel.path) {
       location.pathname = channel.path;
@@ -77,7 +78,7 @@ export default function ChannelView() {
         channel: channel,
       });
     }
-  }, [user, channel, history, location]);
+  }, [id, user, channel, history, location]);
 
   const handleRemoveAudio = (audioFileId) => {
     if (

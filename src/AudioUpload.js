@@ -25,6 +25,10 @@ export default function AudioUpload() {
   return (
     <AudioForm
       title="Upload an audio"
+      alert={{
+        severity: "success",
+        message: "Audio uploaded successfully.",
+      }}
       extraInputs={
         <>
           {channel && (

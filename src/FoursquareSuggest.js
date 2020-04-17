@@ -84,6 +84,7 @@ export default function FoursquareSuggest() {
             variant="outlined"
             fullWidth
             required
+            autoFocus
             onChange={handleSuggest}
             onFocus={getCurrentLocation}
             InputProps={{

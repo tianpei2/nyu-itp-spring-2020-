@@ -14,8 +14,8 @@ import {
   useTheme,
 } from "@material-ui/core";
 import { Close, Done } from "@material-ui/icons";
-import { Helmet } from 'react-helmet';
-import { useHistory, useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import { Prompt, useHistory, useLocation } from "react-router-dom";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
@@ -53,6 +53,8 @@ export default function ResponsiveDialog({
     history.push(background || closeURL);
   };
 
+  const [blocking, setBlocking] = React.useState(false);
+
   return (
     <Dialog
       open={true}
@@ -62,7 +64,19 @@ export default function ResponsiveDialog({
       TransitionComponent={Transition}
       {...rest}
     >
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(e) => {
+          setBlocking(false);
+          handleSubmit(e).catch(() => setBlocking(true));
+        }}
+        onChange={() => setBlocking(true)}
+      >
+        <Prompt
+          when={blocking}
+          message={(location) =>
+            "Are you sure you want to leave this page? Changes you made may not be saved."
+          }
+        />
         <Helmet>
           <title>{title}</title>
         </Helmet>

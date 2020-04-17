@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
   listItemBody: {
     minWidth: 0,
   },
+  listItemActions: {
+    whiteSpace: "nowrap",
+  },
 }));
 
 export default function AudioItem(props) {
@@ -42,13 +45,14 @@ export default function AudioItem(props) {
   if (audio.isName) title = "Your Name";
   if (audio.isJingle) title = "Your Jingle";
   if (venue) {
+    venue.url = `https://foursquare.com/v/${venue.id}`;
     title = (
       <Link
         color="inherit"
         underline="none"
         target="_blank"
         rel="noopener"
-        href={`https://foursquare.com/v/${venue.id}`}
+        href={venue.url}
       >
         {venue.name}
       </Link>
@@ -65,7 +69,9 @@ export default function AudioItem(props) {
   return (
     <ListItem divider={divider}>
       <ListItemAvatar>
-        <CategoryIcon category={category} />
+        <Link href={venue.url} target="_blank" rel="noopener">
+          <CategoryIcon category={category} />
+        </Link>
       </ListItemAvatar>
       <div className={classes.listItemBody}>
         <ListItemText
@@ -78,7 +84,7 @@ export default function AudioItem(props) {
           secondary={subTitle}
           secondaryTypographyProps={{ noWrap: true, title: subTitle }}
         />
-        <div>
+        <div className={classes.listItemActions}>
           <ListActionItem
             edge="start"
             icon={Schedule}

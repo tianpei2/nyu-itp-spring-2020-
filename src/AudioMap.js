@@ -18,6 +18,9 @@ import findZoomAndCenter from "./utils";
 const useStyles = makeStyles((theme) => ({
   popper: {
     zIndex: theme.zIndex.tooltip,
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
   },
   card: {
     width: theme.spacing(45),

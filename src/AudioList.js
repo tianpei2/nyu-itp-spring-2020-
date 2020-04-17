@@ -71,7 +71,7 @@ export default function AudioList(props) {
 
   return (
     <Grid container>
-      <Grid item className={classes.gridItem} xs={12} sm={5} md={4}>
+      <Grid item className={classes.gridItem} xs={12} sm={6} md={4}>
         <Paper>{audioList}</Paper>
       </Grid>
       <Grid item xs sm md className={classes.gridItem}>

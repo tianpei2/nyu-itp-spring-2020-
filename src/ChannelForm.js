@@ -1,11 +1,15 @@
 import { useHistory, useLocation } from "react-router-dom";
 import React from "react";
 import TextField from "@material-ui/core/TextField";
+import { DropzoneArea } from "material-ui-dropzone";
 
 import ResponsiveDialog from "./ResponsiveDialog";
 import foursquare from "./APIClient";
 
 export default function ChannelForm() {
+
+  const [file, setFile] = React.useState([]);
+
   const history = useHistory();
   const location = useLocation();
   const background = location.state && location.state.background;
@@ -20,6 +24,9 @@ export default function ChannelForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
+
+    formData.append("image", file);
+
     let action = "demo/marsbot/audio/channels/";
     action += editing ? "update" : "add";
     return foursquare.post(action, formData).then((response) => {
@@ -63,7 +70,16 @@ export default function ChannelForm() {
             rows={4}
             rowsMax={10}
           />
-        </>
+          <DropzoneArea
+            dropzoneText={"Drag and drop your cover here or click"}
+            onChange={setFile}
+            acceptedFiles={['image/*']}
+            maxFileSize={5000000}
+            filesLimit={1}
+            showPreviews = {true}
+            showPreviewsInDropzone={false}
+          />
+      </>
       }
     />
   );

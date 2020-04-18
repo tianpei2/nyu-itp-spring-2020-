@@ -40,19 +40,20 @@ export default function AudioItem(props) {
   } = props;
   const venue = audio.venues[0];
   let title = "Unknown Audio",
+    href,
     subTitle,
     category;
   if (audio.isName) title = "Your Name";
   if (audio.isJingle) title = "Your Jingle";
   if (venue) {
-    venue.url = `https://foursquare.com/v/${venue.id}`;
+    href = `https://foursquare.com/v/${venue.id}`;
     title = (
       <Link
         color="inherit"
         underline="none"
         target="_blank"
         rel="noopener"
-        href={venue.url}
+        href={href}
       >
         {venue.name}
       </Link>
@@ -69,7 +70,7 @@ export default function AudioItem(props) {
   return (
     <ListItem divider={divider}>
       <ListItemAvatar>
-        <Link href={venue.url} target="_blank" rel="noopener">
+        <Link href={href} target="_blank" rel="noopener">
           <CategoryIcon category={category} />
         </Link>
       </ListItemAvatar>

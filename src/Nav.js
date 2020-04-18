@@ -61,7 +61,7 @@ const NavTabItem = withStyles((theme) => ({
     paddingRight: theme.spacing(1),
   },
 }))(({ idx, ...props }) => (
-  <Hidden smDown={idx > 3}>
+  <Hidden xsDown={idx > 3}>
     <Tab disableRipple {...props} />
   </Hidden>
 ));
@@ -199,7 +199,7 @@ export default function Nav(props) {
               color="inherit"
             >
               <Avatar src="https://pbs.twimg.com/media/EN4Hl-jUwAAy0T5.jpg" />
-              <Hidden smDown={Boolean(user)}>
+              <Hidden xsDown={Boolean(user)}>
                 <Typography
                   variant="h6"
                   component="h1"

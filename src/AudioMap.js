@@ -103,6 +103,22 @@ function Marker(props) {
   );
 }
 
+class GoogleMap extends GoogleMapReact {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (
+      this.initialized_ &&
+      !this.map_ &&
+      this._isCenterDefined(nextProps.center)
+    )
+      this.geoService_.setView(
+        nextProps.center,
+        nextProps.zoom || nextProps.defaultZoom,
+        0
+      );
+    return super.UNSAFE_componentWillReceiveProps(nextProps);
+  }
+}
+
 export default function AudioMap(props) {
   const { audios, hovering, setHovering, audioItemProps } = props;
   const defaultProps = {
@@ -142,7 +158,7 @@ export default function AudioMap(props) {
   };
 
   return (
-    <GoogleMapReact
+    <GoogleMap
       bootstrapURLKeys={{
         key: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
         language: "en",
@@ -153,6 +169,6 @@ export default function AudioMap(props) {
       zoom={zoom - 0.2}
     >
       {audios.map(renderMarker)}
-    </GoogleMapReact>
+    </GoogleMap>
   );
 }

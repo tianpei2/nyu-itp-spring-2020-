@@ -36,8 +36,7 @@ export default function MarsbotHome() {
           audioFileId: audioId,
         })
       )
-      .then((resp) => setAudios(audios.filter((a) => a.id !== audioId)))
-      .catch((error) => console.log(error));
+      .then((resp) => setAudios(audios.filter((a) => a.id !== audioId)));
   };
 
   const header = (

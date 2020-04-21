@@ -18,6 +18,8 @@ import { Helmet } from "react-helmet";
 import { Prompt, useHistory, useLocation } from "react-router-dom";
 import React from "react";
 
+import { FlashContext } from "./FlashSnackbar";
+
 const useStyles = makeStyles((theme) => ({
   title: {
     marginLeft: theme.spacing(2),
@@ -53,6 +55,7 @@ export default function ResponsiveDialog({
     history.push(background || closeURL);
   };
 
+  const { setAlert } = React.useContext(FlashContext);
   const [blocking, setBlocking] = React.useState(false);
 
   return (
@@ -66,8 +69,16 @@ export default function ResponsiveDialog({
     >
       <form
         onSubmit={(e) => {
+          const blocking_ = blocking;
           setBlocking(false);
-          handleSubmit(e).catch(() => setBlocking(true));
+          handleSubmit(e).catch((error) => {
+            setBlocking(blocking_);
+            setAlert({
+              duration: null,
+              severity: "error",
+              message: error.message,
+            });
+          });
         }}
         onChange={() => setBlocking(true)}
       >

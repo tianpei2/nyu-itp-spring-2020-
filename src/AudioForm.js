@@ -20,7 +20,8 @@ export default function AudioForm({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!file) return alert("No audio file selected or recorded.");
+    if (!file)
+      return Promise.reject(new Error("No audio file selected or recorded."));
 
     const formData = new FormData(event.target);
     const ext = file.name.split(".").pop();

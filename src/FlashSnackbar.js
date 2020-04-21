@@ -8,7 +8,7 @@ export const FlashContext = React.createContext({
   setAlert: () => {},
 });
 
-export default function FlashSnackbar({ duration = 5000 }) {
+export default function FlashSnackbar() {
   const location = useLocation();
   const { alert, setAlert } = React.useContext(FlashContext);
   const handleClose = () => setAlert(null);
@@ -19,6 +19,8 @@ export default function FlashSnackbar({ duration = 5000 }) {
 
   if (!alert) return null;
 
+  const { duration = 5000, severity, message } = alert;
+
   return (
     <Snackbar
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -26,8 +28,8 @@ export default function FlashSnackbar({ duration = 5000 }) {
       autoHideDuration={duration}
       onClose={handleClose}
     >
-      <Alert severity={alert.severity} onClose={handleClose}>
-        {alert.message}
+      <Alert severity={severity} onClose={handleClose}>
+        {message}
       </Alert>
     </Snackbar>
   );

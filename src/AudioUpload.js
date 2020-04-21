@@ -16,7 +16,7 @@ export default function AudioUpload() {
   const classes = useStyles();
   const location = useLocation();
   const state = location.state;
-  const [channel, setChannel] = React.useState(state.channel);
+  const [channel, setChannel] = React.useState(state && state.channel);
 
   const handleDelete = () => {
     setChannel(null);

@@ -8,6 +8,7 @@ import {
 import { throttle } from "throttle-debounce";
 import React from "react";
 
+import { FlashContext } from "./FlashSnackbar";
 import CategoryIcon from "./CategoryIcon";
 import foursquare from "./APIClient.js";
 
@@ -26,44 +27,57 @@ const getCurrentLocation = (options) => {
 };
 
 export default function FoursquareSuggest() {
+  const { setAlert } = React.useContext(FlashContext);
+  const [location, setLocation] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [venues, setVenues] = React.useState([]);
   const [selected, setSelected] = React.useState(null);
 
   const fetchData = React.useMemo(
     () =>
-      throttle(300, (query) => {
-        getCurrentLocation().then((location) => {
-          foursquare
-            .get("/venues/suggestcompletion", {
-              params: {
-                ll: location,
-                query: query,
-                limit: 5,
-              },
-              ejectErrorAlert: true,
-            })
-            .then((resp) => {
-              setVenues(resp.minivenues);
-            })
-            .catch(console.log)
-            .then(() => {
-              setLoading(false);
-            });
-        });
+      throttle(300, (query, location) => {
+        foursquare
+          .get("/venues/suggestcompletion", {
+            params: {
+              ll: location,
+              query: query,
+              limit: 5,
+            },
+            ejectErrorAlert: true,
+          })
+          .then((resp) => {
+            setVenues(resp.minivenues);
+          })
+          .catch(console.log)
+          .then(() => {
+            setLoading(false);
+          });
       }),
     []
   );
 
   const handleSuggest = (event) => {
+    if (!location) return;
     const query = event.target.value.trim();
     setVenues([]);
     setLoading(Boolean(query));
-    query && fetchData(query);
+    query && fetchData(query, location);
   };
 
   const handleSelected = (_, venue) => {
     setSelected(venue && venue.id);
+  };
+
+  const handleFocus = () => {
+    getCurrentLocation()
+      .then(setLocation)
+      .catch((error) => {
+        setAlert({
+          duration: null,
+          severity: "error",
+          message: error.message,
+        });
+      });
   };
 
   return (
@@ -86,7 +100,7 @@ export default function FoursquareSuggest() {
             required
             autoFocus
             onChange={handleSuggest}
-            onFocus={getCurrentLocation}
+            onFocus={handleFocus}
             InputProps={{
               ...params.InputProps,
               endAdornment: (

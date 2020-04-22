@@ -72,6 +72,8 @@ export default function AttachForm() {
 
   return (
     <ResponsiveDialog
+      fullWidth
+      maxWidth="xs"
       title="Add audios to channel"
       handleSubmit={handleSubmit}
       closeURL={`/channel/${id}`}

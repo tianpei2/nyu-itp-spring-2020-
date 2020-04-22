@@ -20,6 +20,14 @@ import CategoryIcon from "./CategoryIcon";
 import ListActionItem from "./ListActionItem";
 
 const useStyles = makeStyles((theme) => ({
+  listItemLink: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    opacity: 0,
+  },
   listItemBody: {
     minWidth: 0,
   },
@@ -28,16 +36,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AudioItem(props) {
+export default function AudioItem({
+  audio,
+  action,
+  playing,
+  handleClick,
+  handlePlay,
+  handleDelete,
+  divider = true,
+}) {
   const classes = useStyles();
-  const {
-    audio,
-    action,
-    playing,
-    handlePlay,
-    handleDelete,
-    divider = true,
-  } = props;
   const venue = audio.venues[0];
   let title = "Unknown Audio",
     href,
@@ -68,7 +76,18 @@ export default function AudioItem(props) {
       : PlayCircleOutline;
 
   return (
-    <ListItem divider={divider}>
+    <ListItem divider={divider} onClick={handleClick}>
+      {handleClick || (
+        <a
+          href={href}
+          tabIndex="-1"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.listItemLink}
+        >
+          {title}
+        </a>
+      )}
       <ListItemAvatar>
         <Link href={href} target="_blank" rel="noopener">
           <CategoryIcon category={category} />
@@ -80,7 +99,7 @@ export default function AudioItem(props) {
           primaryTypographyProps={{
             component: "h2",
             noWrap: true,
-            title: venue && venue.name,
+            title: title,
           }}
           secondary={subTitle}
           secondaryTypographyProps={{ noWrap: true, title: subTitle }}
@@ -101,12 +120,14 @@ export default function AudioItem(props) {
             }
           />
           <ListActionItem
+            tabIndex="-1"
             icon={PlayIcon}
             text={audio.playCount || 0}
             onClick={() => handlePlay(audio.url)}
           />
           {handleDelete && (
             <ListActionItem
+              tabIndex="-1"
               icon={DeleteOutline}
               text="Delete"
               onClick={() => handleDelete(audio.id)}

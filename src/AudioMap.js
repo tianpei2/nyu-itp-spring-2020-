@@ -71,7 +71,11 @@ function Marker(props) {
         placement="top"
         transition
         className={classes.popper}
-        container={() => document.fullscreenElement || document.body}
+        container={() =>
+          document.fullscreenElement ||
+          document.webkitFullscreenElement ||
+          document.body
+        }
         {...bindPopper(popupState)}
       >
         {({ TransitionProps }) => (

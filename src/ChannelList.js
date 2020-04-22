@@ -33,6 +33,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
   },
+  cardLink: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
   cardHeaderContent: {
     minWidth: 0,
   },
@@ -68,6 +75,11 @@ export default function ChannelList({ action, title, cardAction }) {
     return (
       <Grid item key={channel.id} xs={12} sm={6} md={4}>
         <Card className={classes.card}>
+          <RouterLink
+            to={`/channel/${channel.id}`}
+            className={classes.cardLink}
+            alt={channel.title}
+          />
           <CardHeader
             avatar={
               <Link href={channel.user.profile} target="_blank" rel="noopener">
@@ -77,16 +89,7 @@ export default function ChannelList({ action, title, cardAction }) {
             action={
               <SubscribeIcon channelId={channel.id} subscribed={subscribed} />
             }
-            title={
-              <Link
-                underline="none"
-                color="inherit"
-                component={RouterLink}
-                to={`/channel/${channel.id}`}
-              >
-                {channel.title}
-              </Link>
-            }
+            title={channel.title}
             titleTypographyProps={{
               noWrap: true,
             }}
@@ -96,9 +99,6 @@ export default function ChannelList({ action, title, cardAction }) {
           <CardMedia
             className={classes.cardMedia}
             image={`https://source.unsplash.com/random?${index}&id=${channel.id}`}
-            title={channel.title}
-            component={RouterLink}
-            to={`/channel/${channel.id}`}
           />
           <CardContent>
             <Typography variant="body2" color="textSecondary" component="p">

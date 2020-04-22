@@ -1,7 +1,8 @@
+import { FormControl, TextField } from "@material-ui/core";
 import { useHistory, useLocation } from "react-router-dom";
 import React from "react";
-import TextField from "@material-ui/core/TextField";
 
+import PhotoUpload from "./PhotoUpload";
 import ResponsiveDialog from "./ResponsiveDialog";
 import foursquare from "./APIClient";
 
@@ -14,6 +15,7 @@ export default function ChannelForm() {
     editing || {
       title: "",
       description: "",
+      photo: {},
     }
   );
 
@@ -63,6 +65,9 @@ export default function ChannelForm() {
             rows={4}
             rowsMax={10}
           />
+          <FormControl fullWidth margin="dense">
+            <PhotoUpload photo={channel.photo} />
+          </FormControl>
         </>
       }
     />

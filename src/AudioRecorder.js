@@ -78,12 +78,7 @@ export default function AudioRecorder({ file, setFile }) {
   const [record, setRecord] = React.useState(null);
   const { getRootProps, getInputProps } = useDropzone({
     accept: "audio/*",
-    onDrop: React.useCallback(
-      ([file]) => {
-        setFile(file);
-      },
-      [setFile]
-    ),
+    onDrop: setFile,
   });
 
   React.useEffect(() => {

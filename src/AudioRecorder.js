@@ -8,7 +8,7 @@ import "videojs-wavesurfer/dist/css/videojs.wavesurfer.css";
 import "videojs-wavesurfer/dist/videojs.wavesurfer.js";
 import "webrtc-adapter";
 
-import { makeStyles } from "@material-ui/core";
+import { Typography, makeStyles } from "@material-ui/core";
 import { useDropzone } from "react-dropzone";
 import React from "react";
 
@@ -58,7 +58,10 @@ const defaultOptions = {
 const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor: "#9FD6BA",
-    borderRadius: theme.spacing(1),
+    borderRadius: theme.shape.borderRadius,
+    marginBottom: theme.spacing(1),
+    overflow: "hidden",
+    cursor: "pointer",
   },
 }));
 
@@ -66,7 +69,7 @@ const resetRecord = (record) => {
   record.surfer.pause();
   record.surfer.setupPlaybackEvents(true);
   record.player.loadingSpinner.show();
-  record.surfer.surfer.once(Event.READY, () => {
+  record.surfer.surfer.once("ready", () => {
     record._processing = false;
   });
 };
@@ -127,24 +130,29 @@ export default function AudioRecorder({ file, setFile }) {
   }, [file, record]);
 
   return (
-    <div
-      data-vjs-player
-      {...getRootProps({
-        onClick: (e) => {
-          if (e.target.nodeName !== "WAVE") e.stopPropagation();
-          if (player && player.deviceButton.el_ === e.target) {
-            player.on("deviceReady", () => {
-              player.record().start();
-            });
-          }
-        },
-      })}
-    >
-      <input {...getInputProps()} />
-      <audio
-        ref={audioRef}
-        className={`video-js vjs-default-skin ${classes.container}`}
-      ></audio>
-    </div>
+    <>
+      <div
+        data-vjs-player
+        {...getRootProps({
+          onClick: (e) => {
+            if (e.target.nodeName !== "WAVE") e.stopPropagation();
+            if (player && player.deviceButton.el_ === e.target) {
+              player.on("deviceReady", () => {
+                player.record().start();
+              });
+            }
+          },
+        })}
+      >
+        <input {...getInputProps()} />
+        <audio
+          ref={audioRef}
+          className={`video-js vjs-default-skin ${classes.container}`}
+        />
+      </div>
+      <Typography component="p" variant="caption" color="textSecondary">
+        * Drag 'n' drop, or click to start recording
+      </Typography>
+    </>
   );
 }

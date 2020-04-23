@@ -46,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
   cardMedia: {
     paddingTop: "56.25%", // 16:9
   },
+  cardContent: {
+    flexGrow: 1,
+  },
 }));
 
 export default function ChannelList({ action, title, cardAction }) {
@@ -100,7 +103,7 @@ export default function ChannelList({ action, title, cardAction }) {
             className={classes.cardMedia}
             image={`https://source.unsplash.com/random?${index}&id=${channel.id}`}
           />
-          <CardContent>
+          <CardContent className={classes.cardContent}>
             <Typography variant="body2" color="textSecondary" component="p">
               {channel.description}
             </Typography>

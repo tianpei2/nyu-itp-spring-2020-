@@ -83,7 +83,7 @@ export default function PhotoUpload(props) {
       image={photo.url}
       {...getRootProps()}
     >
-      <input name="photoId" type="hidden" value={photo.id || ""} />
+      {photo.id && <input name="photoId" type="hidden" value={photo.id} />}
       <input {...getInputProps()} />
       {photo.id ? (
         <IconButton className={classes.closeIcon} onClick={handleDeletePhoto}>

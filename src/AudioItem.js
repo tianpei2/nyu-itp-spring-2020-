@@ -20,14 +20,6 @@ import CategoryIcon from "./CategoryIcon";
 import ListActionItem from "./ListActionItem";
 
 const useStyles = makeStyles((theme) => ({
-  listItemLink: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    opacity: 0,
-  },
   listItemBody: {
     minWidth: 0,
   },
@@ -55,17 +47,7 @@ export default function AudioItem({
   if (audio.isJingle) title = "Your Jingle";
   if (venue) {
     href = `https://foursquare.com/v/${venue.id}`;
-    title = (
-      <Link
-        color="inherit"
-        underline="none"
-        target="_blank"
-        rel="noopener"
-        href={href}
-      >
-        {venue.name}
-      </Link>
-    );
+    title = venue.name;
     subTitle = venue.location.formattedAddress[0];
     category = venue.categories && venue.categories[0];
   }
@@ -77,25 +59,22 @@ export default function AudioItem({
 
   return (
     <ListItem divider={divider} onClick={handleClick}>
-      {handleClick || (
-        <a
-          href={href}
-          tabIndex="-1"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={classes.listItemLink}
-        >
-          {title}
-        </a>
-      )}
       <ListItemAvatar>
-        <Link href={href} target="_blank" rel="noopener">
-          <CategoryIcon category={category} />
-        </Link>
+        <CategoryIcon category={category} />
       </ListItemAvatar>
       <div className={classes.listItemBody}>
         <ListItemText
-          primary={title}
+          primary={
+            <Link
+              color="inherit"
+              underline="none"
+              target="_blank"
+              rel="noopener noreferrer"
+              href={href}
+            >
+              {title}
+            </Link>
+          }
           primaryTypographyProps={{
             component: "h2",
             noWrap: true,

@@ -14,6 +14,7 @@ import { Helmet } from "react-helmet";
 import { Link as RouterLink, useLocation, useParams } from "react-router-dom";
 import React from "react";
 
+import { getPhotoURL } from "./utils";
 import SubscribeIcon from "./SubscribeIcon";
 import User from "./User";
 import foursquare from "./APIClient";
@@ -69,8 +70,10 @@ export default function ChannelList({ action, title, cardAction }) {
   }, [action, userId, location]);
 
   const renderChannel = (channel, index) => {
-    channel.user = User.transform(channel.user);
-    channel.path = `/channel/${channel.id}`;
+    const user = User.transform(channel.user);
+    const photoSrc = channel.photo
+      ? getPhotoURL(channel.photo)
+      : `https://picsum.photos/seed/${channel.id}/640/360`;
     const subscribed = Boolean(
       channel.subscribers.filter((u) => u.id === user.id)[0]
     );
@@ -85,8 +88,8 @@ export default function ChannelList({ action, title, cardAction }) {
           />
           <CardHeader
             avatar={
-              <Link href={channel.user.profile} target="_blank" rel="noopener">
-                <Avatar alt={channel.user.name} src={channel.user.picture} />
+              <Link href={user.profile} target="_blank" rel="noopener">
+                <Avatar alt={user.name} src={user.picture} />
               </Link>
             }
             action={
@@ -99,10 +102,7 @@ export default function ChannelList({ action, title, cardAction }) {
             subheader={channel.createDate}
             classes={{ content: classes.cardHeaderContent }}
           />
-          <CardMedia
-            className={classes.cardMedia}
-            image={`https://source.unsplash.com/random?${index}&id=${channel.id}`}
-          />
+          <CardMedia className={classes.cardMedia} image={photoSrc} />
           <CardContent className={classes.cardContent}>
             <Typography variant="body2" color="textSecondary" component="p">
               {channel.description}

@@ -5,6 +5,7 @@ import React from "react";
 
 import clsx from "clsx";
 
+import { getPhotoURL } from './utils';
 import User from "./User";
 import foursquare from "./APIClient";
 
@@ -64,9 +65,7 @@ export default function PhotoUpload(props) {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
-        const p = response.photo;
-        p.url = `${p.prefix}${p.width}x${p.height}${p.suffix}`;
-        setPhoto(p);
+        setPhoto(response.photo);
       });
   };
 
@@ -80,7 +79,7 @@ export default function PhotoUpload(props) {
       className={clsx(classes.uploadBox, {
         empty: !photo.id,
       })}
-      image={photo.url}
+      image={getPhotoURL(photo)}
       {...getRootProps()}
     >
       {photo.id && <input name="photoId" type="hidden" value={photo.id} />}

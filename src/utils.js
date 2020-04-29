@@ -2,7 +2,7 @@
 import { fitBounds } from "google-map-react/utils";
 
 // Here world is a tube
-const findZoomAndCenter = (
+export const findZoomAndCenter = (
   {
     size,
     center: defaultCenter = { lat: 35.689, lng: 139.741 },
@@ -129,4 +129,6 @@ const findZoomAndCenter = (
   };
 };
 
-export default findZoomAndCenter;
+export function getPhotoURL(p) {
+  return `${p.prefix}${p.width}x${p.height}${p.suffix}`;
+}

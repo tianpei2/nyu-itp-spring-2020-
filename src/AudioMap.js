@@ -12,8 +12,8 @@ import { usePopupState, bindPopper } from "material-ui-popup-state/hooks";
 import GoogleMapReact from "google-map-react";
 import React from "react";
 
+import { findZoomAndCenter, getPhotoURL } from './utils';
 import AudioItem from "./AudioItem";
-import findZoomAndCenter from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   popper: {
@@ -48,8 +48,8 @@ function Marker(props) {
   const venue = audio.venues[0];
   // ["venues"][0]["photos"]["groups"][0]["items"][0]["prefix"]
   if (venue.photos) {
-    const pItem = venue.photos.groups[0].items[0];
-    photoSrc = `${pItem.prefix}${pItem.width}x${pItem.height}${pItem.suffix}`;
+    const photo = venue.photos.groups[0].items[0];
+    photoSrc = getPhotoURL(photo);
   }
 
   React.useEffect(() => {

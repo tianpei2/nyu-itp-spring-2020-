@@ -3,7 +3,7 @@ import React from "react";
 
 import qs from "qs";
 
-import User from './User';
+import User from "./User";
 import foursquare from "./APIClient";
 
 export default (props) => {
@@ -12,14 +12,11 @@ export default (props) => {
   const location = useLocation();
   const { user } = React.useContext(User.Context);
 
-  const handleCancel = () => {
-    const background = location.state && location.state.background;
-    history.push(background || "/");
-  };
-
   React.useEffect(() => {
-    if (!window.confirm("Are you sure you want to delete this channel?"))
-      return handleCancel();
+    if (!window.confirm("Are you sure you want to delete this channel?")) {
+      const background = location.state && location.state.background;
+      history.push(background || "/");
+    }
     foursquare
       .post(
         "demo/marsbot/audio/channels/delete",
@@ -28,7 +25,7 @@ export default (props) => {
         })
       )
       .then((resp) => history.replace(`/user/${user.id}/channels`));
-  });
+  }, [id, user, history, location]);
 
   return null;
 };

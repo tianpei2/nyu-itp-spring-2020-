@@ -20,7 +20,7 @@ const defaultOptions = {
   controls: true,
   controlBar: {
     // deviceButton: false,
-    fullscreenToggle: false,
+    // fullscreenToggle: false,
   },
   fluid: true,
   plugins: {
@@ -81,7 +81,7 @@ export default function AudioRecorder({ file, setFile }) {
   const [record, setRecord] = React.useState(null);
   const { getRootProps, getInputProps } = useDropzone({
     accept: "audio/*",
-    onDrop: setFile,
+    onDrop: ([file]) => setFile(file),
   });
 
   React.useEffect(() => {

@@ -15,7 +15,7 @@ export default (props) => {
   React.useEffect(() => {
     if (!window.confirm("Are you sure you want to delete this channel?")) {
       const background = location.state && location.state.background;
-      history.push(background || "/");
+      return history.push(background || "/");
     }
     foursquare
       .post(

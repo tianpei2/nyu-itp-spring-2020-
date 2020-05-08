@@ -99,6 +99,9 @@ export default function ChannelList({ action, title, cardAction }) {
             titleTypographyProps={{
               noWrap: true,
             }}
+            subheaderTypographyProps={{
+              noWrap: true,
+            }}
             subheader={channel.createDate}
             classes={{ content: classes.cardHeaderContent }}
           />
